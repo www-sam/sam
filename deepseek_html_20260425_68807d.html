@@ -1327,10 +1327,119 @@
       }
     }
 
-    function modalNext(p) {
+       function modalNext(p) {
       const cur = modalState[p].step;
       if (cur === 2) {
         modalState[p].value = sliderToValue(parseInt(document.getElementById(`${p}-value-slider`).value));
       }
       if (cur < 3) {
-        setModalStep(p, cur
+        setModalStep(p, cur + 1);
+      } else {
+        renderModalResults(p, modalState[p]);
+        setModalStep(p, 4);
+      }
+    }
+
+    function modalBack(p) {
+      const cur = modalState[p].step;
+      if (cur > 1) setModalStep(p, cur - 1);
+    }
+
+    window.openModal = function(id) {
+      const p = id === 'mergerModal' ? 'm' : 'a';
+      modalState[p] = { step: 1, sector: null, value: '$500M', goal: null };
+      buildModalStep1(p);
+      
+      // Reset slider
+      const slider = document.getElementById(`${p}-value-slider`);
+      if (slider) {
+        slider.value = 25;
+        document.getElementById(`${p}-value-display`).textContent = '$500M';
+        slider.oninput = () => {
+          document.getElementById(`${p}-value-display`).textContent = sliderToValue(parseInt(slider.value));
+        };
+      }
+      
+      document.getElementById(id).classList.add('open');
+      document.body.style.overflow = 'hidden';
+      setModalStep(p, 1);
+    };
+
+    window.closeModal = function(id) {
+      document.getElementById(id).classList.remove('open');
+      document.body.style.overflow = '';
+    };
+
+    // ─── Init App ────────────────────────────────────────────────────────────────
+    export function initApp() {
+      // Ticker
+      renderTicker();
+      
+      // Deals
+      renderStatsGrid('present');
+      renderDealsTable(getData('deals')?.present || []);
+      document.querySelectorAll('.deal-era-btn').forEach(btn => {
+        btn.addEventListener('click', () => switchEra(btn.dataset.era));
+      });
+      document.getElementById('dealSearch')?.addEventListener('keyup', debounce(filterDeals, 250));
+      document.getElementById('sectorFilter')?.addEventListener('change', filterDeals);
+      document.getElementById('regionFilter')?.addEventListener('change', filterDeals);
+      
+      // Sectors
+      const sectors = getData('sectors');
+      if (sectors) {
+        initLiveState(sectors['Technology']);
+        renderSectorTabs('Technology', switchSector);
+        renderSectorCompanies('Technology');
+        renderSectorSummary('Technology');
+        liveInterval = setInterval(() => {
+          tickPrices(sectors['Technology']);
+          updateSectorPrices('Technology');
+          renderSectorSummary('Technology');
+        }, 2800);
+      }
+      
+      // Regions
+      renderRegions();
+      renderAlerts('alertsContainer');
+      renderAlerts('alertsList');
+      renderSignals('signalsGrid');
+      renderSignals('signalCards');
+      
+      // Intelligence
+      renderIntelligence();
+      
+      // Make Deals
+      renderMakeDeals();
+      
+      // Chat
+      addMessage('assistant', 'Welcome to the M&A Intelligence Engine...');
+      renderQuickBtns(QUICK_QUERIES, (q) => {
+        const input = document.getElementById('chatInput');
+        if (input) { input.value = q; sendMessage(); }
+      });
+      document.getElementById('sendBtn')?.addEventListener('click', sendMessage);
+      document.getElementById('chatInput')?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') sendMessage();
+      });
+      
+      // Modals
+      document.querySelectorAll('.modal-overlay').forEach(el => {
+        el.addEventListener('click', (e) => { if (e.target === el) closeModal(el.id); });
+      });
+      document.querySelectorAll('.modal-close').forEach(btn => {
+        btn.addEventListener('click', () => closeModal(btn.closest('.modal-overlay').id));
+      });
+      document.getElementById('m-back-btn')?.addEventListener('click', () => modalBack('m'));
+      document.getElementById('m-next-btn')?.addEventListener('click', () => modalNext('m'));
+      document.getElementById('a-back-btn')?.addEventListener('click', () => modalBack('a'));
+      document.getElementById('a-next-btn')?.addEventListener('click', () => modalNext('a'));
+      
+      // Section change listener
+      window.addEventListener('sectionchange', (e) => {
+        if (e.detail.section === 'makedeals') renderMakeDeals();
+      });
+    }
+  </script>
+</body>
+</html>
