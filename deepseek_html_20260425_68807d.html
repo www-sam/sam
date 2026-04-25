@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Real-time M&A deal flow, sector analysis, and AI-powered market intelligence for institutional investors.">
+  <meta property="og:title" content="M&A Hub — Global M&A Intelligence Platform">
+  <meta property="og:description" content="Track $2.1T+ in live M&A deals across Technology, Healthcare, Energy and more.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#c9a84c">
+  
+  <title>M&A Hub — Global M&A Intelligence Platform</title>
+  
+  <link rel="manifest" href="/manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ─── BASE ─────────────────────────────────────────────────────────────────── */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --bg-primary:#ffffff; --bg-secondary:#f8f9fa; --bg-tertiary:#f0f2f5;
+      --text-primary:#1a1a2e; --text-secondary:#4a4a6a; --text-tertiary:#7a7a8a;
+      --border-color:#e0e0e0; --accent-gold:#c9a84c; --accent-gold-dim:#8b7a3a;
+      --accent-green:#4caf7d; --accent-red:#cf4444; --accent-blue:#4a8fc1; --accent-purple:#7c3aed;
+      --shadow-sm:0 2px 8px rgba(0,0,0,0.08); --shadow-md:0 4px 16px rgba(0,0,0,0.12); --shadow-lg:0 8px 32px rgba(0,0,0,0.15);
+      --font-main:'Poppins',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      --font-heading:'Plus Jakarta Sans',sans-serif;
+      --font-mono:'JetBrains Mono',monospace;
+    }
+    :root.dark-mode {
+      --bg-primary:#0a0a0f; --bg-secondary:#15151d; --bg-tertiary:#1f1f2a;
+      --text-primary:#e8e8f0; --text-secondary:#b8b8c8; --text-tertiary:#7a7a8a;
+      --border-color:#2a2a35;
+      --shadow-sm:0 2px 8px rgba(0,0,0,0.3); --shadow-md:0 4px 16px rgba(0,0,0,0.4); --shadow-lg:0 8px 32px rgba(0,0,0,0.5);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    }
+    html,body{width:100%;height:100%;}
+    body{background:var(--bg-primary);color:var(--text-primary);font-family:var(--font-main);line-height:1.6;overflow-x:hidden;transition:background-color .3s ease,color .3s ease;}
+
+    /* ─── Accessibility ────────────────────────────────────────────────────────── */
+    .skip-link{position:absolute;top:-40px;left:0;background:var(--accent-gold);color:#1a1200;padding:.5rem 1rem;z-index:10000;font-weight:700;text-decoration:none;border-radius:0 0 4px 0;}
+    .skip-link:focus{top:0;}
+    :focus-visible{outline:2px solid var(--accent-gold);outline-offset:2px;border-radius:4px;}
+
+    /* ─── Skeleton ─────────────────────────────────────────────────────────────── */
+    @keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+    .skeleton-row{height:48px;border-radius:8px;margin-bottom:.75rem;background:linear-gradient(90deg,var(--bg-secondary) 25%,var(--bg-tertiary) 50%,var(--bg-secondary) 75%);background-size:800px 100%;animation:shimmer 1.5s infinite linear;}
+    .skeleton-card{height:140px;border-radius:12px;background:linear-gradient(90deg,var(--bg-secondary) 25%,var(--bg-tertiary) 50%,var(--bg-secondary) 75%);background-size:800px 100%;animation:shimmer 1.5s infinite linear;}
+    .skeleton-table-rows .skeleton-row{height:52px;}
+
+    /* ─── Utilities ────────────────────────────────────────────────────────────── */
+    .data-source-tag{display:inline-flex;align-items:center;gap:.5rem;font-size:.72rem;color:var(--text-secondary);background:var(--bg-secondary);border:1px solid var(--border-color);padding:.5rem 1rem;border-radius:20px;margin-top:1rem;font-weight:500;}
+    .data-source-inline{font-size:.72rem;color:var(--text-secondary);margin-bottom:.5rem;font-style:italic;}
+    .section-label-gold{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--accent-gold);margin-bottom:1.25rem;font-weight:700;}
+    .footer-disclaimer{font-size:.7rem;color:var(--text-tertiary);margin-top:.35rem;font-style:italic;}
+    .live-dot{width:6px;height:6px;background:var(--accent-green);border-radius:50%;animation:pulse 1.5s infinite;}
+    @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
+
+    /* ─── Nav ──────────────────────────────────────────────────────────────────── */
+    nav{position:fixed;top:0;left:0;right:0;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-color);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;z-index:1000;height:70px;box-shadow:var(--shadow-sm);transition:all .3s ease;}
+    .dark-mode nav{background:rgba(10,10,15,.95);}
+    .nav-left{display:flex;align-items:center;gap:1.5rem;}
+    .nav-back-btn{display:none;background:none;border:none;color:var(--text-primary);font-size:1.5rem;cursor:pointer;transition:color .2s;padding:.5rem;}
+    .nav-back-btn:hover{color:var(--accent-gold);}
+    .nav-back-btn.visible{display:block;}
+    .nav-logo{font-family:var(--font-heading);font-size:1.5rem;font-weight:800;color:var(--text-primary);letter-spacing:-.02em;text-decoration:none;cursor:pointer;}
+    .nav-logo span{color:var(--accent-gold);}
+    .nav-center{display:flex;gap:2.5rem;list-style:none;}
+    .nav-center a{color:var(--text-secondary);text-decoration:none;font-size:.9rem;font-weight:500;transition:color .2s;cursor:pointer;padding:.5rem 0;}
+    .nav-center a:hover,.nav-center a.active{color:var(--accent-gold);}
+    .nav-right{display:flex;gap:1.5rem;align-items:center;}
+    .theme-toggle{background:var(--bg-secondary);border:1px solid var(--border-color);color:var(--text-primary);border-radius:50%;width:40px;height:40px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2rem;transition:all .2s;}
+    .theme-toggle:hover{background:var(--accent-gold);color:white;border-color:var(--accent-gold);}
+    .btn-access{background:linear-gradient(135deg,var(--accent-gold) 0%,#d4af57 100%);color:white;border:none;padding:.7rem 1.5rem;border-radius:6px;font-weight:600;font-size:.9rem;cursor:pointer;transition:all .3s;box-shadow:var(--shadow-sm);}
+    .btn-access:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
+
+    /* ─── Ticker ───────────────────────────────────────────────────────────────── */
+    .ticker{position:fixed;top:70px;left:0;right:0;background:var(--bg-secondary);border-bottom:2px solid var(--accent-gold);padding:.75rem 0;overflow:hidden;z-index:999;height:50px;display:flex;align-items:center;box-shadow:var(--shadow-sm);}
+    .ticker-label{padding:0 1.5rem;color:var(--accent-gold);font-weight:700;font-size:.75rem;letter-spacing:.15em;white-space:nowrap;border-right:2px solid var(--accent-gold);font-family:var(--font-mono);background:var(--bg-secondary);position:relative;z-index:10;height:100%;display:flex;align-items:center;}
+    .ticker-content{display:flex;gap:3rem;animation:scroll 60s linear infinite;padding:0 1.5rem;white-space:nowrap;}
+    @keyframes scroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+    .ticker-item{display:flex;gap:.75rem;font-size:.8rem;font-family:var(--font-mono);font-weight:500;}
+    .ticker-item .symbol{color:var(--accent-gold);font-weight:700;}
+    .ticker-item .price{color:var(--text-primary);}
+    .ticker-item.up .change{color:var(--accent-green);}
+    .ticker-item.dn .change{color:var(--accent-red);}
+
+    /* ─── Main ─────────────────────────────────────────────────────────────────── */
+    main{margin-top:120px;min-height:calc(100vh - 120px);}
+    .section{display:none;animation:fadeSection .4s ease;}
+    .section.active{display:block;}
+    @keyframes fadeSection{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+    /* ─── Landing ──────────────────────────────────────────────────────────────── */
+    .landing-page{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:2rem;background:linear-gradient(135deg,var(--bg-primary) 0%,var(--bg-secondary) 100%);}
+    .landing-hero{text-align:center;margin-bottom:4rem;animation:slideUp .6s ease;}
+    @keyframes slideUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+    .landing-hero h1{font-family:var(--font-heading);font-size:4rem;font-weight:800;color:var(--text-primary);margin-bottom:1rem;letter-spacing:-.03em;line-height:1.2;}
+    .landing-hero h1 span{background:linear-gradient(135deg,var(--accent-gold) 0%,var(--accent-purple) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .landing-hero p{font-size:1.2rem;color:var(--text-secondary);margin-bottom:1rem;max-width:600px;margin-left:auto;margin-right:auto;line-height:1.8;}
+    .landing-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-bottom:4rem;max-width:900px;margin-left:auto;margin-right:auto;}
+    .stat-card{background:var(--bg-secondary);padding:2rem;border-radius:12px;border:1px solid var(--border-color);text-align:center;transition:all .3s;contain:layout paint;}
+    .stat-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-md);border-color:var(--accent-gold);}
+    .stat-card-num{font-family:var(--font-heading);font-size:2.5rem;font-weight:800;color:var(--accent-gold);margin-bottom:.5rem;}
+    .stat-card-label{font-size:.9rem;color:var(--text-secondary);font-weight:500;}
+    .landing-cta{display:grid;grid-template-columns:repeat(2,1fr);gap:2rem;max-width:900px;margin-left:auto;margin-right:auto;}
+    .cta-card{background:var(--bg-secondary);border:2px solid var(--border-color);border-radius:12px;padding:3rem 2rem;text-align:center;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;contain:layout paint;}
+    .cta-card::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(201,168,76,.1),transparent);transition:left .5s;}
+    .cta-card:hover::before{left:100%;}
+    .cta-card:hover{border-color:var(--accent-gold);transform:translateY(-8px);box-shadow:var(--shadow-lg);}
+    .cta-icon{font-size:4rem;margin-bottom:1rem;}
+    .cta-title{font-family:var(--font-heading);font-size:1.8rem;font-weight:800;color:var(--text-primary);margin-bottom:.75rem;}
+    .cta-desc{color:var(--text-secondary);font-size:.95rem;line-height:1.7;margin-bottom:1.5rem;}
+    .cta-btn{background:linear-gradient(135deg,var(--accent-gold) 0%,#d4af57 100%);color:white;border:none;padding:1rem 2rem;border-radius:8px;font-weight:700;font-size:1rem;cursor:pointer;transition:all .3s;width:100%;display:inline-block;text-align:center;}
+    .cta-btn:hover{transform:scale(1.05);box-shadow:var(--shadow-lg);}
+
+    /* ─── Section Content ──────────────────────────────────────────────────────── */
+    .section-content{padding:2rem 4rem 4rem;max-width:1400px;margin:0 auto;}
+    .sec-eyebrow{font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-gold);margin-bottom:.75rem;font-weight:700;}
+    .sec-title{font-family:var(--font-heading);font-size:3.5rem;font-weight:800;color:var(--text-primary);letter-spacing:-.02em;margin-bottom:.75rem;}
+    .sec-title em{color:var(--accent-gold);font-style:normal;}
+    .sec-desc{color:var(--text-secondary);font-size:1rem;margin-bottom:2rem;max-width:700px;line-height:1.8;}
+    .divider{height:2px;background:linear-gradient(90deg,var(--border-color) 0%,transparent 100%);margin:2.5rem 0;}
+
+    /* ─── Stats Grid ───────────────────────────────────────────────────────────── */
+    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-bottom:2.5rem;}
+    .stat-box{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:12px;padding:2rem;display:flex;flex-direction:column;transition:all .3s;box-shadow:var(--shadow-sm);contain:layout paint;}
+    .stat-box:hover{border-color:var(--accent-gold);box-shadow:var(--shadow-md);transform:translateY(-4px);}
+    .stat-num{font-family:var(--font-heading);font-size:2.5rem;font-weight:800;color:var(--accent-gold);letter-spacing:-.02em;}
+    .stat-label{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-secondary);margin-top:.75rem;font-weight:600;}
+    .stat-change{font-size:.8rem;margin-top:.75rem;font-weight:600;}
+    .stat-change.up{color:var(--accent-green);}
+    .stat-change.dn{color:var(--accent-red);}
+
+    /* ─── Filter Bar ───────────────────────────────────────────────────────────── */
+    .filter-bar{display:flex;gap:1rem;margin-bottom:2rem;flex-wrap:wrap;}
+    .filter-bar input,.filter-bar select{background:var(--bg-secondary);border:1px solid var(--border-color);color:var(--text-primary);padding:.75rem 1rem;font-family:var(--font-mono);font-size:.85rem;outline:none;border-radius:6px;transition:all .2s;}
+    .filter-bar input:focus,.filter-bar select:focus{border-color:var(--accent-gold);box-shadow:0 0 0 3px rgba(201,168,76,.1);}
+    .filter-bar input{flex:1;min-width:250px;}
+
+    /* ─── Deals Table ──────────────────────────────────────────────────────────── */
+    .table-wrapper{border:1px solid var(--border-color);border-radius:12px;overflow:hidden;box-shadow:var(--shadow-sm);}
+    .deals-table{width:100%;border-collapse:collapse;font-size:.9rem;}
+    .deals-table thead{background:var(--bg-secondary);border-bottom:2px solid var(--border-color);}
+    .deals-table th{text-align:left;padding:1.25rem;font-weight:700;color:var(--text-primary);font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;}
+    .deals-table td{padding:1.25rem;border-bottom:1px solid var(--border-color);}
+    .deals-table tbody tr{transition:all .2s;}
+    .deals-table tbody tr:hover{background:var(--bg-secondary);}
+    .deal-value{font-family:var(--font-mono);color:var(--accent-gold);font-weight:700;}
+    .deal-status{display:inline-block;padding:.4rem .8rem;font-size:.7rem;font-weight:700;border-radius:6px;letter-spacing:.05em;text-transform:uppercase;}
+    .deal-status.status-pending{background:rgba(201,168,76,.15);color:var(--accent-gold);}
+    .deal-status.status-closed{background:rgba(76,175,125,.15);color:var(--accent-green);}
+    .deal-status.status-rumored{background:rgba(122,122,138,.15);color:var(--text-secondary);}
+    .deal-count{font-size:.8rem;color:var(--text-secondary);margin-top:1rem;text-align:right;}
+
+    /* ─── Deal Era Tabs ────────────────────────────────────────────────────────── */
+    .deal-era-tabs{display:flex;gap:0;margin-bottom:2rem;border-bottom:2px solid var(--border-color);}
+    .deal-era-btn{background:none;border:none;color:var(--text-secondary);padding:1.25rem 1.75rem;font-size:.95rem;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;display:flex;align-items:center;gap:.75rem;font-weight:600;}
+    .deal-era-btn.active{color:var(--accent-gold);border-bottom-color:var(--accent-gold);}
+    .era-dot{width:10px;height:10px;border-radius:50%;}
+    .era-dot.present-dot{background:var(--accent-gold);}
+    .era-dot.past-dot{background:var(--accent-green);}
+    .era-dot.future-dot{background:var(--accent-blue);}
+
+    /* ─── Sector Tabs ──────────────────────────────────────────────────────────── */
+    .sector-tabs{display:flex;gap:.75rem;margin-bottom:2rem;flex-wrap:wrap;}
+    .sector-tab{background:var(--bg-secondary);border:1px solid var(--border-color);color:var(--text-secondary);padding:.7rem 1.25rem;font-size:.85rem;cursor:pointer;transition:all .2s;border-radius:8px;font-weight:600;}
+    .sector-tab:hover{border-color:var(--accent-gold);color:var(--accent-gold);}
+    .sector-tab.active{background:linear-gradient(135deg,var(--accent-gold) 0%,#d4af57 100%);color:white;border-color:var(--accent-gold);}
+
+    /* ─── Company Cards ────────────────────────────────────────────────────────── */
+    .company-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:1.25rem;margin-bottom:2.5rem;}
+    .company-card{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:14px;padding:0;transition:all .28s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;contain:layout paint;}
+    .company-card:hover{border-color:var(--accent-gold);box-shadow:0 8px 32px rgba(201,168,76,.18);transform:translateY(-4px);}
+    .card-top-bar{height:3px;background:linear-gradient(90deg,var(--accent-gold),var(--accent-purple));width:0;transition:width .35s ease;}
+    .company-card:hover .card-top-bar{width:100%;}
+    .co-header{display:flex;justify-content:space-between;align-items:flex-start;padding:1.25rem 1.5rem .75rem;}
+    .co-identity{flex:1;min-width:0;}
+    .co-ticker-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem;}
+    .co-ticker{font-family:var(--font-mono);font-size:.72rem;font-weight:700;color:var(--accent-gold);background:rgba(201,168,76,.12);padding:.18rem .55rem;border-radius:5px;letter-spacing:.06em;}
+    .co-exchange{font-family:var(--font-mono);font-size:.65rem;color:var(--text-secondary);}
+    .co-name{font-family:var(--font-heading);font-size:1.05rem;font-weight:800;color:var(--text-primary);line-height:1.2;}
+    .co-country{font-size:.72rem;color:var(--text-secondary);margin-top:.2rem;}
+    .co-price-block{text-align:right;flex-shrink:0;}
+    .co-price-val{font-family:var(--font-mono);font-size:1.45rem;font-weight:700;line-height:1;transition:color .3s;}
+    .co-price-val.up{color:var(--accent-green);}
+    .co-price-val.dn{color:var(--accent-red);}
+    .co-price-chg{display:inline-flex;align-items:center;gap:.25rem;font-size:.75rem;font-weight:700;margin-top:.3rem;padding:.18rem .55rem;border-radius:20px;}
+    .co-price-chg.up{background:rgba(76,175,125,.15);color:var(--accent-green);}
+    .co-price-chg.dn{background:rgba(239,68,68,.15);color:var(--accent-red);}
+    @keyframes priceFlash{0%,100%{opacity:1}50%{opacity:.3}}
+    .co-price-flash{animation:priceFlash .4s ease;}
+    .co-sparkline{padding:0 1.5rem;height:52px;}
+    .co-sparkline svg{width:100%;height:52px;display:block;}
+    .co-stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;margin:0;padding:.75rem 0;border-top:1px solid var(--border-color);border-bottom:1px solid var(--border-color);}
+    .co-stat{text-align:center;padding:.4rem .5rem;border-right:1px solid var(--border-color);}
+    .co-stat:last-child{border-right:none;}
+    .co-stat-val{font-family:var(--font-mono);font-size:.82rem;font-weight:700;color:var(--text-primary);}
+    .co-stat-lbl{font-size:.58rem;text-transform:uppercase;letter-spacing:.09em;color:var(--text-secondary);margin-top:.15rem;font-weight:700;}
+    .co-week-range{padding:.75rem 1.5rem 0;}
+    .co-week-labels{display:flex;justify-content:space-between;font-size:.62rem;color:var(--text-secondary);margin-bottom:.35rem;font-family:var(--font-mono);}
+    .co-week-bar{height:4px;background:var(--bg-tertiary);border-radius:2px;position:relative;}
+    .co-week-fill{height:100%;background:linear-gradient(90deg,rgba(201,168,76,.4),var(--accent-gold));border-radius:2px;}
+    .co-week-dot{position:absolute;top:50%;transform:translate(-50%,-50%);width:10px;height:10px;background:var(--accent-gold);border:2px solid var(--bg-primary);border-radius:50%;box-shadow:0 0 6px rgba(201,168,76,.7);}
+    .co-badges{display:flex;gap:.4rem;flex-wrap:wrap;padding:.75rem 1.5rem;}
+    .badge{display:inline-block;background:rgba(201,168,76,.12);color:var(--accent-gold);padding:.25rem .6rem;font-size:.65rem;border-radius:5px;font-weight:700;letter-spacing:.04em;}
+    .badge-dim{background:rgba(122,122,138,.1);color:var(--text-secondary);}
+    .co-desc{font-size:.8rem;color:var(--text-secondary);line-height:1.65;padding:0 1.5rem 1rem;flex:1;}
+    .co-cta{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.5rem;border-top:1px solid var(--border-color);font-size:.72rem;color:var(--accent-gold);font-weight:700;cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:.08em;}
+    .co-cta:hover{background:rgba(201,168,76,.06);}
+    .co-cta-live{display:flex;align-items:center;gap:.35rem;font-size:.65rem;font-weight:700;color:var(--accent-green);}
+
+    /* ─── Region Cards ─────────────────────────────────────────────────────────── */
+    .three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:2.5rem;}
+    .region-card{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:12px;padding:1.75rem;position:relative;overflow:hidden;transition:all .3s;box-shadow:var(--shadow-sm);contain:layout paint;}
+    .region-card:hover{border-color:var(--accent-gold);box-shadow:var(--shadow-md);transform:translateY(-6px);}
+    .region-header{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1rem;}
+    .region-flag{font-size:2.5rem;flex-shrink:0;}
+    .region-header-body{flex:1;}
+    .region-name{font-family:var(--font-heading);font-size:1.2rem;font-weight:800;color:var(--text-primary);margin-bottom:.2rem;}
+    .region-vol{font-family:var(--font-heading);font-size:1.5rem;font-weight:800;color:var(--accent-gold);}
+    .region-yoy{font-size:.8rem;font-weight:700;margin-top:.25rem;}
+    .region-stats{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+    .region-deals{font-size:.8rem;color:var(--text-secondary);font-weight:600;}
+    .region-tags{display:flex;gap:.4rem;flex-wrap:wrap;}
+    .region-desc{font-size:.8rem;color:var(--text-secondary);line-height:1.65;}
+
+    /* ─── Alerts ───────────────────────────────────────────────────────────────── */
+    .alerts-container{display:flex;flex-direction:column;gap:.75rem;margin-bottom:2.5rem;}
+    .alert-item{display:flex;gap:1rem;align-items:flex-start;padding:1rem 1.25rem;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:8px;font-size:.85rem;transition:all .2s;}
+    .alert-item:hover{border-color:var(--accent-gold);box-shadow:var(--shadow-sm);}
+    .alert-tag{font-weight:700;font-size:.75rem;white-space:nowrap;background:rgba(201,168,76,.15);color:var(--accent-gold);padding:.35rem .75rem;border-radius:4px;text-transform:uppercase;letter-spacing:.05em;}
+    .alert-text{color:var(--text-secondary);line-height:1.6;}
+
+    /* ─── Signal Cards ─────────────────────────────────────────────────────────── */
+    .signal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;}
+    .signal-card{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:12px;padding:2rem;position:relative;overflow:hidden;transition:all .3s;box-shadow:var(--shadow-sm);contain:layout paint;}
+    .signal-card:hover{border-color:var(--accent-gold);box-shadow:var(--shadow-md);transform:translateY(-6px);}
+
+    /* ─── Analysis / Chat ──────────────────────────────────────────────────────── */
+    .analysis-layout{display:grid;grid-template-columns:1fr 380px;gap:1.5rem;}
+    .chat-container{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:12px;display:flex;flex-direction:column;height:600px;box-shadow:var(--shadow-sm);overflow:hidden;}
+    .chat-header{padding:1.5rem;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;background:var(--bg-tertiary);}
+    .chat-header-title{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-secondary);font-weight:700;}
+    .chat-status{font-size:.75rem;color:var(--accent-green);font-weight:700;display:flex;align-items:center;gap:.5rem;}
+    .chat-messages{flex:1;overflow-y:auto;padding:1.5rem;display:flex;flex-direction:column;gap:1rem;}
+    .msg{display:flex;flex-direction:column;gap:.5rem;font-size:.85rem;line-height:1.6;}
+    .msg-ai{align-items:flex-start;}
+    .msg-user{align-items:flex-end;}
+    .msg-label{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--text-secondary);}
+    .msg-ai .msg-label{color:var(--accent-gold);}
+    .msg-ai>div:not(.msg-label){background:var(--bg-tertiary);padding:1rem;border-radius:8px;max-width:90%;color:var(--text-secondary);}
+    .msg-user>div:not(.msg-label){background:linear-gradient(135deg,var(--accent-gold) 0%,#d4af57 100%);padding:1rem;border-radius:8px;max-width:90%;color:white;}
+    .typing-indicator span{display:inline-block;width:6px;height:6px;background:var(--accent-gold);border-radius:50%;margin:0 2px;animation:typingBounce 1.2s infinite;}
+    .typing-indicator span:nth-child(2){animation-delay:.2s;}
+    .typing-indicator span:nth-child(3){animation-delay:.4s;}
+    @keyframes typingBounce{0%,80%,100%{transform:translateY(0);}40%{transform:translateY(-8px);}}
+    .chat-input-row{display:flex;gap:.75rem;padding:1.25rem;border-top:1px solid var(--border-color);background:var(--bg-tertiary);}
+    .chat-input{flex:1;background:var(--bg-secondary);border:1px solid var(--border-color);color:var(--text-primary);padding:.75rem 1rem;font-family:var(--font-main);font-size:.85rem;outline:none;border-radius:6px;transition:all .2s;}
+    .chat-input:focus{border-color:var(--accent-gold);box-shadow:0 0 0 3px rgba(201,168,76,.1);}
+    .chat-send{background:linear-gradient(135deg,var(--accent-gold) 0%,#d4af57 100%);color:white;border:none;padding:.75rem 1.5rem;font-weight:700;font-size:.8rem;cursor:pointer;transition:all .2s;border-radius:6px;text-transform:uppercase;letter-spacing:.05em;}
+    .chat-send:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
+    .chat-send:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+    .quick-queries{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:12px;padding:1.5rem;box-shadow:var(--shadow-sm);}
+    .quick-label{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--accent-gold);margin-bottom:1rem;font-weight:700;}
+    .quick-btns{display:flex;flex-direction:column;gap:.75rem;}
+    .quick-btn{background:var(--bg-tertiary);border:1px solid var(--border-color);color:var(--text-secondary);padding:.75rem 1rem;font-size:.75rem;text-align:left;cursor:pointer;transition:all .2s;border-radius:6px;line-height:1.5;font-weight:500;}
+    .quick-btn:hover{border-color:var(--accent-gold);background:var(--bg-secondary);color:var(--accent-gold);}
+    .card{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:12px;padding:1.5rem;box-shadow:var(--shadow-sm);}
+
+    /* ─── Make Deals Sectors ───────────────────────────────────────────────────── */
+    .md-sector-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;margin-bottom:2.5rem;}
+    .md-sector-card{background:var(--bg-secondary);border:2px solid var(--border-color);border-radius:12px;padding:2rem;cursor:pointer;position:relative;overflow:hidden;transition:all .3s;box-shadow:var(--shadow-sm);contain:layout paint;}
+    .md-sector-card:hover{border-color:var(--accent-gold);background:var(--bg-tertiary);box-shadow:var(--shadow-md);transform:translateY(-6px);}
+    .md-sector-icon{font-size:3rem;margin-bottom:1rem;}
+    .md-sector-title{font-family:var(--font-heading);font-size:1.3rem;font-weight:800;color:var(--text-primary);margin-bottom:.35rem;}
+    .md-sector-sub{font-size:.8rem;color:var(--text-secondary);margin-bottom:1.25rem;line-height:1.6;}
+    .md-sector-stats{display:grid;grid-template-columns:1fr 1fr;gap:1rem;padding-top:1.25rem;border-top:1px solid var(--border-color);}
+    .md-sector-stat-num{font-family:var(--font-heading);font-size:1.2rem;font-weight:800;}
+    .md-sector-stat-lbl{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-secondary);margin-top:.35rem;font-weight:600;}
+
+    /* ─── Deal Type Buttons ────────────────────────────────────────────────────── */
+    .deal-type-row{display:flex;gap:1.5rem;margin-bottom:3rem;justify-content:center;flex-wrap:wrap;}
+    .deal-type-btn{display:flex;flex-direction:column;align-items:center;gap:.75rem;padding:2rem 3.5rem;border-radius:16px;font-family:var(--font-heading);font-size:1.5rem;font-weight:800;cursor:pointer;transition:all .35s cubic-bezier(.34,1.56,.64,1);letter-spacing:-.01em;position:relative;overflow:hidden;min-width:240px;border:none;}
+    .deal-type-btn:hover{transform:translateY(-8px) scale(1.03);}
+    .deal-type-btn .btn-icon{font-size:2.8rem;}
+    .deal-type-btn .btn-sub{font-size:.8rem;font-weight:500;letter-spacing:.05em;opacity:.85;font-family:var(--font-main);}
+    .btn-merger{background:linear-gradient(135deg,#c9a84c 0%,#e8c96a 50%,#b8932e 100%);color:#1a1200;box-shadow:0 8px 32px rgba(201,168,76,.45);}
+    .btn-merger:hover{box-shadow:0 16px 48px rgba(201,168,76,.6);}
+    .btn-acquisition{background:var(--bg-primary);color:var(--text-primary);border:2.5px solid var(--accent-gold)!important;box-shadow:0 4px 20px rgba(201,168,76,.2);}
+    .btn-acquisition:hover{background:var(--bg-secondary);box-shadow:0 12px 40px rgba(201,168,76,.35);}
+
+    /* ─── Modals ───────────────────────────────────────────────────────────────── */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(6px);z-index:9000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;}
+    .modal-overlay.open{opacity:1;pointer-events:all;}
+    .modal-box{background:var(--bg-primary);border:1px solid var(--border-color);border-radius:20px;width:92%;max-width:680px;max-height:88vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.35);transform:translateY(30px) scale(.97);transition:transform .35s cubic-bezier(.34,1.56,.64,1);position:relative;}
+    .modal-overlay.open .modal-box{transform:translateY(0) scale(1);}
+    .modal-header{padding:2rem 2rem 1.25rem;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:flex-start;position:sticky;top:0;background:var(--bg-primary);border-radius:20px 20px 0 0;z-index:2;}
+    .modal-close{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:50%;width:38px;height:38px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--text-secondary);transition:all .2s;flex-shrink:0;}
+    .modal-close:hover{background:var(--accent-red);color:white;border-color:var(--accent-red);}
+    .modal-badge{display:inline-block;font-size:.65rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;padding:.35rem .8rem;border-radius:20px;margin-bottom:.6rem;}
+    .badge-merger{background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#1a1200;}
+    .badge-acquisition{background:rgba(201,168,76,.15);color:var(--accent-gold);border:1px solid var(--accent-gold);}
+    .modal-title{font-family:var(--font-heading);font-size:1.6rem;font-weight:800;color:var(--text-primary);letter-spacing:-.02em;}
+    .modal-subtitle{font-size:.85rem;color:var(--text-secondary);margin-top:.3rem;}
+    .modal-body{padding:1.75rem 2rem;}
+    .modal-step{display:none;}
+    .modal-step.active{display:block;animation:fadeSection .3s ease;}
+    .step-indicator{display:flex;gap:.5rem;margin-bottom:1.75rem;align-items:center;}
+    .step-dot{width:32px;height:6px;border-radius:3px;background:var(--border-color);transition:background .3s;}
+    .step-dot.done{background:var(--accent-gold);}
+    .step-label{font-size:.75rem;color:var(--text-secondary);margin-left:.5rem;font-weight:600;}
+    .form-group{margin-bottom:1.5rem;}
+    .form-label{display:block;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-secondary);margin-bottom:.6rem;}
+    .form-question{font-family:var(--font-heading);font-size:1.15rem;font-weight:700;color:var(--text-primary);margin-bottom:1rem;line-height:1.4;}
+    .option-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:.75rem;}
+    .option-pill{padding:.7rem .9rem;border:2px solid var(--border-color);border-radius:10px;text-align:center;cursor:pointer;font-size:.82rem;font-weight:600;color:var(--text-secondary);background:var(--bg-secondary);transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:.35rem;}
+    .option-pill:hover{border-color:var(--accent-gold);color:var(--accent-gold);background:var(--bg-tertiary);}
+    .option-pill.selected{border-color:var(--accent-gold);background:rgba(201,168,76,.12);color:var(--accent-gold);}
+    .option-pill .pill-icon{font-size:1.5rem;}
+    .value-display{font-family:var(--font-heading);font-size:2.2rem;font-weight:800;color:var(--accent-gold);text-align:center;margin-bottom:1rem;}
+    input[type=range]{-webkit-appearance:none;width:100%;height:6px;border-radius:3px;background:var(--border-color);outline:none;cursor:pointer;}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#e8c96a);cursor:pointer;box-shadow:0 2px 8px rgba(201,168,76,.5);}
+    .range-labels{display:flex;justify-content:space-between;font-size:.72rem;color:var(--text-secondary);margin-top:.5rem;}
+    .goal-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+    .goal-card{padding:1rem;border:2px solid var(--border-color);border-radius:10px;cursor:pointer;transition:all .2s;background:var(--bg-secondary);}
+    .goal-card:hover{border-color:var(--accent-gold);}
+    .goal-card.selected{border-color:var(--accent-gold);background:rgba(201,168,76,.1);}
+    .goal-card-icon{font-size:1.6rem;margin-bottom:.4rem;}
+    .goal-card-title{font-size:.82rem;font-weight:700;color:var(--text-primary);}
+    .goal-card-desc{font-size:.72rem;color:var(--text-secondary);margin-top:.2rem;line-height:1.4;}
+    .modal-footer{padding:1.25rem 2rem 2rem;display:flex;gap:1rem;justify-content:flex-end;align-items:center;}
+    .modal-btn-back{background:none;border:1px solid var(--border-color);color:var(--text-secondary);padding:.85rem 1.75rem;border-radius:10px;font-weight:600;font-size:.9rem;cursor:pointer;transition:all .2s;}
+    .modal-btn-back:hover{border-color:var(--accent-gold);color:var(--accent-gold);}
+    .modal-btn-next{background:linear-gradient(135deg,#c9a84c 0%,#d4af57 100%);color:white;border:none;padding:.85rem 2rem;border-radius:10px;font-weight:700;font-size:.9rem;cursor:pointer;transition:all .25s;box-shadow:0 4px 16px rgba(201,168,76,.4);}
+    .modal-btn-next:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(201,168,76,.5);}
+    .modal-btn-next:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+
+    /* ─── Results ──────────────────────────────────────────────────────────────── */
+    .results-header{background:linear-gradient(135deg,rgba(201,168,76,.12) 0%,rgba(124,58,237,.08) 100%);border:1px solid rgba(201,168,76,.3);border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;display:flex;gap:1rem;align-items:center;}
+    .results-header-icon{font-size:2.2rem;}
+    .results-header-title{font-family:var(--font-heading);font-size:1rem;font-weight:800;color:var(--text-primary);}
+    .results-header-sub{font-size:.78rem;color:var(--text-secondary);margin-top:.2rem;}
+    .result-card{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:12px;padding:1.25rem 1.5rem 1.25rem 2rem;margin-bottom:1rem;transition:all .25s;position:relative;overflow:hidden;}
+    .result-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;}
+    .result-card.rank-1::before{background:linear-gradient(180deg,#c9a84c,#e8c96a);}
+    .result-card.rank-2::before{background:linear-gradient(180deg,#9ca3af,#d1d5db);}
+    .result-card.rank-3::before{background:linear-gradient(180deg,#b45309,#d97706);}
+    .result-card:hover{border-color:var(--accent-gold);transform:translateX(4px);box-shadow:var(--shadow-md);}
+    .result-rank{position:absolute;top:1rem;right:1.25rem;font-family:var(--font-mono);font-size:.7rem;font-weight:700;color:var(--text-secondary);}
+    .result-company{font-family:var(--font-heading);font-size:1.05rem;font-weight:800;color:var(--text-primary);}
+    .result-meta{font-size:.75rem;color:var(--text-secondary);margin-top:.2rem;margin-bottom:.75rem;}
+    .result-tags{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.75rem;}
+    .result-tag{font-size:.65rem;font-weight:700;padding:.2rem .6rem;border-radius:4px;}
+    .result-tag.fit{background:rgba(76,175,125,.15);color:var(--accent-green);}
+    .result-tag.value{background:rgba(201,168,76,.15);color:var(--accent-gold);}
+    .result-desc{font-size:.78rem;color:var(--text-secondary);line-height:1.65;}
+
+    /* ─── Sector Summary Bar ───────────────────────────────────────────────────── */
+    .sector-summary-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
+    .sector-sum-box{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:10px;padding:1rem 1.25rem;text-align:center;}
+    .sector-sum-val{font-family:var(--font-heading);font-size:1.3rem;font-weight:800;color:var(--accent-gold);}
+    .sector-sum-lbl{font-size:.67rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-secondary);margin-top:.25rem;font-weight:600;}
+    .live-badge{display:inline-flex;align-items:center;gap:.35rem;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-green);background:rgba(76,175,125,.12);border:1px solid rgba(76,175,125,.3);padding:.25rem .6rem;border-radius:20px;}
+
+    /* ─── Footer ───────────────────────────────────────────────────────────────── */
+    footer{background:var(--bg-secondary);border-top:1px solid var(--border-color);padding:3rem 4rem;margin-top:4rem;display:grid;grid-template-columns:1fr auto 1fr;gap:2rem;align-items:center;box-shadow:var(--shadow-sm);}
+    .footer-logo{font-family:var(--font-heading);font-size:1.3rem;font-weight:800;color:var(--text-primary);}
+    .footer-logo span{color:var(--accent-gold);}
+    .footer-text{font-size:.85rem;color:var(--text-secondary);margin-top:.35rem;}
+    .footer-links{display:flex;gap:2.5rem;justify-content:center;}
+    .footer-links a{color:var(--text-secondary);text-decoration:none;font-size:.85rem;transition:color .2s;cursor:pointer;font-weight:500;}
+    .footer-links a:hover{color:var(--accent-gold);}
+
+    /* ─── Intelligence Page ────────────────────────────────────────────────────── */
+    .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;margin-bottom:2.5rem;}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2.5rem;}
+    .card-title{font-family:var(--font-heading);font-size:1.1rem;font-weight:800;color:var(--text-primary);margin-bottom:1rem;}
+    .card-text{font-size:.8rem;color:var(--text-secondary);line-height:1.8;}
+    .capability-row{display:flex;gap:.75rem;padding:.75rem 0;border-bottom:1px solid var(--border-color);}
+    .capability-row:last-child{border-bottom:none;}
+    .cap-title{font-size:.85rem;font-weight:700;color:var(--text-primary);}
+    .cap-desc{font-size:.75rem;color:var(--text-secondary);margin-top:.2rem;}
+
+    /* ─── Responsive ───────────────────────────────────────────────────────────── */
+    @media(max-width:1024px){
+      .section-content{padding:2rem;}.stats-grid{grid-template-columns:repeat(2,1fr);}.three-col{grid-template-columns:1fr;}.analysis-layout{grid-template-columns:1fr;}.landing-cta{grid-template-columns:1fr;}.landing-stats{grid-template-columns:1fr;}footer{grid-template-columns:1fr;text-align:center;}.footer-links{flex-wrap:wrap;justify-content:center;}.two-col{grid-template-columns:1fr;}
+    }
+    @media(max-width:768px){
+      nav{padding:.75rem 1rem;height:auto;flex-wrap:wrap;gap:.5rem;}.nav-center{display:none;}.nav-logo{font-size:1.2rem;}.sec-title{font-size:2rem;}.landing-hero h1{font-size:2.5rem;}.stats-grid{grid-template-columns:1fr;}.company-grid{grid-template-columns:1fr;}.md-sector-grid{grid-template-columns:1fr;}.section-content{padding:1.5rem;}.deal-type-row{flex-direction:column;align-items:stretch;}.deal-type-btn{min-width:auto;}.sector-summary-bar{grid-template-columns:repeat(2,1fr);}.modal-box{width:98%;max-height:95vh;border-radius:12px;}.goal-grid{grid-template-columns:1fr;}
+    }
+  </style>
+  <script type="importmap">
+  {
+    "imports": {
+      "main": "/js/main.js",
+      "data": "/js/data.js",
+      "renderer": "/js/renderer.js",
+      "interactions": "/js/interactions.js"
+    }
+  }
+  </script>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  
+  <nav role="navigation" aria-label="Main navigation">
+    <div class="nav-left">
+      <button class="nav-back-btn" id="backBtn" aria-label="Go back to homepage">← Back</button>
+      <a class="nav-logo" href="/" data-nav aria-label="M&A Hub Home">M&A <span>Hub</span></a>
+    </div>
+    <ul class="nav-center" role="menubar">
+      <li role="none"><a role="menuitem" href="/deals" data-nav>Live Deals</a></li>
+      <li role="none"><a role="menuitem" href="/sectors" data-nav>Sectors</a></li>
+      <li role="none"><a role="menuitem" href="/regions" data-nav>Regions</a></li>
+      <li role="none"><a role="menuitem" href="/analysis" data-nav>Analysis</a></li>
+      <li role="none"><a role="menuitem" href="/intelligence" data-nav>Intelligence</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" type="button">
+        <span aria-hidden="true">🌙</span>
+      </button>
+      <button class="btn-access" type="button">Get Access</button>
+    </div>
+  </nav>
+
+  <div class="ticker" aria-label="Live M&A ticker">
+    <div class="ticker-label">LIVE M&A</div>
+    <div class="ticker-content" id="tickerContent"></div>
+  </div>
+
+  <main id="main-content">
+    <!-- LANDING -->
+    <section id="landing" class="section active" aria-label="Homepage">
+      <div class="landing-page">
+        <div class="landing-hero">
+          <h1>Global <span>M&A Intelligence</span> Platform</h1>
+          <p>Real-time deal flow, sector analysis, and AI-powered market intelligence for institutional investors and M&A professionals.</p>
+          <div class="data-source-tag"><span class="live-dot"></span> Data sourced from public filings, SEC EDGAR, Bloomberg & Refinitiv · Last updated <span id="lastUpdated"></span></div>
+        </div>
+        <div class="landing-stats">
+          <div class="stat-card"><div class="stat-card-num" id="animStat1">$2.1T</div><div class="stat-card-label">YTD Deal Volume 2025</div></div>
+          <div class="stat-card"><div class="stat-card-num" id="animStat2">4,847</div><div class="stat-card-label">Deals This Quarter</div></div>
+          <div class="stat-card"><div class="stat-card-num" id="animStat3">78</div><div class="stat-card-label">Mega-Deals (&gt;$5B)</div></div>
+        </div>
+        <div class="landing-cta">
+          <!-- FIXED: data-nav now contains the correct route, href removed from div -->
+          <div class="cta-card" role="button" tabindex="0" data-nav="/deals" aria-label="Explore Live Deals">
+            <div class="cta-icon" aria-hidden="true">📊</div>
+            <div class="cta-title">Live Deals</div>
+            <p class="cta-desc">Explore real-time M&A transactions with advanced filtering by sector, region, and deal status.</p>
+            <span class="cta-btn">Explore Deals →</span>
+          </div>
+          <div class="cta-card" role="button" tabindex="0" data-nav="/makedeals" aria-label="Start building deals">
+            <div class="cta-icon" aria-hidden="true">🎯</div>
+            <div class="cta-title">Make Deals</div>
+            <p class="cta-desc">Build custom M&A transactions, analyze targets, and model acquisition scenarios.</p>
+            <span class="cta-btn">Start Building →</span>
+          </div>
+        </div>
+        <div style="margin-top:2.5rem;">
+          <div class="section-label-gold">Market Alerts</div>
+          <div id="alertsList" class="alerts-container"><div class="skeleton-row"></div><div class="skeleton-row"></div><div class="skeleton-row"></div></div>
+        </div>
+        <div style="margin-top:2.5rem;">
+          <div class="section-label-gold">M&A Signals</div>
+          <div class="signal-grid" id="signalCards"><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DEALS -->
+    <section id="deals" class="section" aria-label="Live Deals">
+      <div class="section-content">
+        <div class="sec-eyebrow">Live Deal Flow</div>
+        <h2 class="sec-title">Global <em>M&A Deals</em></h2>
+        <p class="sec-desc">Complete coverage of past, present, and future mergers & acquisitions across every sector and region worldwide.</p>
+        <div class="data-source-inline">Data sourced from SEC, Bloomberg, Refinitiv & public filings · Updated daily</div>
+        <div class="divider"></div>
+        <div class="stats-grid" id="statsGrid"><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div></div>
+        <div class="deal-era-tabs" role="tablist" aria-label="Deal era">
+          <button class="deal-era-btn active" role="tab" aria-selected="true" data-era="present"><span class="era-dot present-dot"></span> Present Deals</button>
+          <button class="deal-era-btn" role="tab" aria-selected="false" data-era="past"><span class="era-dot past-dot"></span> Past Deals</button>
+          <button class="deal-era-btn" role="tab" aria-selected="false" data-era="future"><span class="era-dot future-dot"></span> Future Deals</button>
+        </div>
+        <div class="filter-bar">
+          <input type="text" id="dealSearch" placeholder="Search acquirer, target or sector..." aria-label="Search deals">
+          <select id="sectorFilter" aria-label="Filter by sector">
+            <option value="">All Sectors</option>
+            <option>Technology</option><option>Healthcare</option><option>Energy</option>
+            <option>Finance</option><option>Consumer</option><option>Industrials</option>
+            <option>Real Estate</option><option>Media</option><option>Telecoms</option>
+            <!-- ADDED: combined Media & Telecom -->
+            <option>Media & Telecom</option>
+            <option>Defense</option><option>Mining</option><option>Logistics</option>
+          </select>
+          <select id="regionFilter" aria-label="Filter by region">
+            <option value="">All Regions</option>
+            <option>North America</option><option>Europe</option><option>Asia Pacific</option>
+            <option>Middle East</option><option>Latin America</option><option>Africa</option><option>Global</option>
+          </select>
+        </div>
+        <div class="table-wrapper">
+          <table class="deals-table" id="dealsTable">
+            <thead><tr><th>#</th><th>Acquirer</th><th>Target</th><th>Deal Value</th><th>Sector</th><th>Region</th><th>Date</th><th>Type</th><th>Status</th></tr></thead>
+            <tbody id="dealsBody"><tr><td colspan="9"><div class="skeleton-table-rows"><div class="skeleton-row"></div><div class="skeleton-row"></div><div class="skeleton-row"></div></div></td></tr></tbody>
+          </table>
+        </div>
+        <div id="dealCount" class="deal-count"></div>
+      </div>
+    </section>
+
+    <!-- SECTORS -->
+    <section id="sectors" class="section" aria-label="Sector Intelligence">
+      <div class="section-content">
+        <div class="sec-eyebrow">Sector Intelligence</div>
+        <h2 class="sec-title">Live Market <em>Data</em></h2>
+        <p class="sec-desc">Simulated prices and M&A profiles — updated live every few seconds for demonstration purposes.</p>
+        <div class="data-source-inline">Share prices are simulated for demo · Sector data from public filings & estimates</div>
+        <div class="divider"></div>
+        <div class="sector-tabs" id="sectorTabs" role="tablist" aria-label="Sectors"></div>
+        <div id="sectorSummaryBar" class="sector-summary-bar"></div>
+        <div class="company-grid" id="companyGrid"></div>
+      </div>
+    </section>
+
+    <!-- REGIONS -->
+    <section id="regions" class="section" aria-label="Regional Intelligence">
+      <div class="section-content">
+        <div class="sec-eyebrow">Regional Intelligence</div>
+        <h2 class="sec-title">M&A by <em>Region</em></h2>
+        <p class="sec-desc">Geographic breakdown of global M&A activity — deal volumes, regulatory environments, and strategic trends by region.</p>
+        <div class="divider"></div>
+        <div class="three-col" id="regionsGrid"><div class="skeleton-card" style="height:200px"></div><div class="skeleton-card" style="height:200px"></div><div class="skeleton-card" style="height:200px"></div></div>
+        <div style="margin-bottom:2.5rem;">
+          <div class="section-label-gold">Live Alerts & Updates</div>
+          <div class="alerts-container" id="alertsContainer"><div class="skeleton-row"></div><div class="skeleton-row"></div></div>
+        </div>
+        <div class="signal-grid" id="signalsGrid"><div class="skeleton-card"></div><div class="skeleton-card"></div></div>
+      </div>
+    </section>
+
+    <!-- ANALYSIS -->
+    <section id="analysis" class="section" aria-label="AI Deal Analysis">
+      <div class="section-content">
+        <div class="sec-eyebrow">AI Deal Intelligence</div>
+        <h2 class="sec-title">M&A <em>Analysis</em></h2>
+        <p class="sec-desc">AI-powered M&A analysis assistant — ask anything about global deal flow, valuations, regulatory risk, or sector trends.</p>
+        <div class="divider"></div>
+        <div class="analysis-layout">
+          <div class="chat-container">
+            <div class="chat-header">
+              <div class="chat-header-title">M&A INTELLIGENCE ENGINE · AI ASSISTANT</div>
+              <div class="chat-status"><span class="live-dot"></span> Online</div>
+            </div>
+            <div class="chat-messages" id="chatMessages" role="log" aria-live="polite" aria-atomic="false"></div>
+            <div class="chat-input-row">
+              <input type="text" class="chat-input" id="chatInput" placeholder="Ask about deals, sectors, valuations..." aria-label="Chat message">
+              <button class="chat-send" id="sendBtn" type="button">SEND</button>
+            </div>
+          </div>
+          <div>
+            <div class="quick-queries">
+              <div class="quick-label">Quick Queries</div>
+              <div class="quick-btns" id="quickBtns"></div>
+            </div>
+            <div class="card" style="margin-top:1rem;">
+              <div class="section-label-gold" style="margin-bottom:1rem;">Intelligence Capabilities</div>
+              <div class="capability-row"><span aria-hidden="true">📊</span><div><div class="cap-title">Deal Screening</div><div class="cap-desc">Filter by sector, region, size, and status</div></div></div>
+              <div class="capability-row"><span aria-hidden="true">⚖️</span><div><div class="cap-title">Regulatory Analysis</div><div class="cap-desc">DOJ, FTC, EU CMA risk assessment</div></div></div>
+              <div class="capability-row"><span aria-hidden="true">💰</span><div><div class="cap-title">Valuation Multiples</div><div class="cap-desc">EV/EBITDA, P/E, and premium analysis</div></div></div>
+              <div class="capability-row"><span aria-hidden="true">🔮</span><div><div class="cap-title">Deal Prediction</div><div class="cap-desc">AI-powered likelihood scoring</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTELLIGENCE -->
+    <section id="intelligence" class="section" aria-label="Market Intelligence">
+      <div class="section-content">
+        <div class="sec-eyebrow">Market Intelligence</div>
+        <h2 class="sec-title">Deal Flow <em>Intelligence</em></h2>
+        <p class="sec-desc">Analytics and market intelligence across global M&A activity, sector trends, and deal flow metrics.</p>
+        <div class="divider"></div>
+        <div class="kpi-grid" id="kpiGrid"></div>
+        <div class="two-col">
+          <div class="card">
+            <div class="section-label-gold" style="margin-bottom:1rem;">Market Commentary</div>
+            <div class="card-title">Q1–Q2 2025 M&A Outlook</div>
+            <p class="card-text">Global M&A has roared back in 2025, with first-half volumes surpassing $2.1T — the strongest start since 2021. Technology sector consolidation is the defining theme, with AI infrastructure, semiconductors, and data center REITs attracting the most strategic capital. The Federal Reserve's pivot to lower rates has materially reduced deal financing costs, unlocking a wave of buyout activity across private equity. Meanwhile, energy transition M&A is accelerating as oil majors diversify into battery metals, hydrogen, and renewables. Regulatory environments in the US and EU remain elevated for mega-deals exceeding $10B, with antitrust scrutiny adding 6–18 months to cross-border timelines.</p>
+          </div>
+          <div class="card">
+            <div class="section-label-gold" style="margin-bottom:1rem;">2025–2026 Deal Forecast</div>
+            <div class="card-title">Projected $4.8T Full-Year Global Volume</div>
+            <p class="card-text">Goldman Sachs and Morgan Stanley project full-year 2025 global M&A volume to hit $4.8T, driven by PE deployment of record $3.9T dry powder, hyperscaler AI acquisitions, and healthcare biotech consolidation. The pipeline entering H2 2025 includes over 120 deals in regulatory review valued at over $800B. Key themes for 2026 include: defence technology M&A as NATO members increase procurement spend, critical minerals consolidation as the EV battery supply chain tightens, and financial services digitisation where fintechs remain prime acquisition targets for incumbent banks.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAKE DEALS -->
+    <section id="makedeals" class="section" aria-label="Deal Creation Suite">
+      <div class="section-content">
+        <div class="sec-eyebrow">Deal Creation Suite</div>
+        <h2 class="sec-title">Make <em>Deals</em></h2>
+        <p class="sec-desc">Explore acquisition targets by sector, analyse share price and valuation, and model your own M&A transaction.</p>
+        <div class="divider"></div>
+        <div id="mdContent"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- MERGER MODAL -->
+  <div class="modal-overlay" id="mergerModal" role="dialog" aria-modal="true" aria-labelledby="mergerTitle">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div>
+          <div class="modal-badge badge-merger">⚡ MERGER</div>
+          <div class="modal-title" id="mergerTitle">Find Your Merger Partner</div>
+          <div class="modal-subtitle">Answer 3 quick questions — we'll match your ideal strategic partners</div>
+        </div>
+        <button class="modal-close" aria-label="Close merger modal" type="button">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="step-indicator">
+          <div class="step-dot done" id="mstep-dot-1"></div>
+          <div class="step-dot" id="mstep-dot-2"></div>
+          <div class="step-dot" id="mstep-dot-3"></div>
+          <div class="step-dot" id="mstep-dot-4"></div>
+          <span class="step-label" id="mstep-label">Step 1 of 3</span>
+        </div>
+        <div class="modal-step active" id="mstep-1">
+          <div class="form-group">
+            <div class="form-label">Step 1 — Your Company</div>
+            <div class="form-question">Which sector does your company operate in?</div>
+            <div class="option-grid" id="m-sector-grid"></div>
+          </div>
+        </div>
+        <div class="modal-step" id="mstep-2">
+          <div class="form-group">
+            <div class="form-label">Step 2 — Company Valuation</div>
+            <div class="form-question">What is your company's approximate enterprise value?</div>
+            <div class="value-display" id="m-value-display">$500M</div>
+            <input type="range" id="m-value-slider" min="0" max="100" value="25" aria-label="Company valuation">
+            <div class="range-labels"><span>$50M</span><span>$500M</span><span>$2B</span><span>$10B</span><span>$50B+</span></div>
+          </div>
+        </div>
+        <div class="modal-step" id="mstep-3">
+          <div class="form-group">
+            <div class="form-label">Step 3 — Merger Objective</div>
+            <div class="form-question">What is the primary goal of this merger?</div>
+            <div class="goal-grid" id="m-goal-grid"></div>
+          </div>
+        </div>
+        <div class="modal-step" id="mstep-4"><div id="merger-results"></div></div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-btn-back" id="m-back-btn" type="button" style="display:none">← Back</button>
+        <button class="modal-btn-next" id="m-next-btn" type="button">Continue →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACQUISITION MODAL -->
+  <div class="modal-overlay" id="acquisitionModal" role="dialog" aria-modal="true" aria-labelledby="acquisitionTitle">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div>
+          <div class="modal-badge badge-acquisition">🎯 ACQUISITION</div>
+          <div class="modal-title" id="acquisitionTitle">Find Acquisition Targets</div>
+          <div class="modal-subtitle">Tell us about yourself — we'll identify the best companies to acquire</div>
+        </div>
+        <button class="modal-close" aria-label="Close acquisition modal" type="button">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="step-indicator">
+          <div class="step-dot done" id="astep-dot-1"></div>
+          <div class="step-dot" id="astep-dot-2"></div>
+          <div class="step-dot" id="astep-dot-3"></div>
+          <div class="step-dot" id="astep-dot-4"></div>
+          <span class="step-label" id="astep-label">Step 1 of 3</span>
+        </div>
+        <div class="modal-step active" id="astep-1">
+          <div class="form-group">
+            <div class="form-label">Step 1 — Your Company</div>
+            <div class="form-question">Which sector does your company operate in?</div>
+            <div class="option-grid" id="a-sector-grid"></div>
+          </div>
+        </div>
+        <div class="modal-step" id="astep-2">
+          <div class="form-group">
+            <div class="form-label">Step 2 — Acquisition Budget</div>
+            <div class="form-question">What is your acquisition budget / purchasing power?</div>
+            <div class="value-display" id="a-value-display">$500M</div>
+            <input type="range" id="a-value-slider" min="0" max="100" value="25" aria-label="Acquisition budget">
+            <div class="range-labels"><span>$50M</span><span>$500M</span><span>$2B</span><span>$10B</span><span>$50B+</span></div>
+          </div>
+        </div>
+        <div class="modal-step" id="astep-3">
+          <div class="form-group">
+            <div class="form-label">Step 3 — Acquisition Strategy</div>
+            <div class="form-question">What type of acquisition are you pursuing?</div>
+            <div class="goal-grid" id="a-goal-grid"></div>
+          </div>
+        </div>
+        <div class="modal-step" id="astep-4"><div id="acquisition-results"></div></div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-btn-back" id="a-back-btn" type="button" style="display:none">← Back</button>
+        <button class="modal-btn-next" id="a-next-btn" type="button">Continue →</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div>
+      <div class="footer-logo">M&A <span>Hub</span></div>
+      <div class="footer-text">Global M&A Intelligence Platform</div>
+    </div>
+    <div class="footer-links">
+      <a href="/deals" data-nav>Live Deals</a>
+      <a href="/sectors" data-nav>Sectors</a>
+      <a href="/regions" data-nav>Regions</a>
+      <a href="/analysis" data-nav>Analysis</a>
+      <a href="/intelligence" data-nav>Intelligence</a>
+      <a href="/makedeals" data-nav>Make Deals</a>
+    </div>
+    <div>
+      <div class="footer-text">© 2025 M&A Hub. For informational purposes only.</div>
+      <div class="footer-disclaimer">Data sourced from public filings, SEC EDGAR, Bloomberg & Refinitiv. Simulated pricing for demonstration. Not investment advice.</div>
+    </div>
+  </footer>
+
+  <!-- JavaScript Modules -->
+  <script type="module">
+    // ─── data.js ───────────────────────────────────────────────────
+    let cache = {};
+    const liveState = {};
+    export async function loadAllData() {
+      const files = ['deals','sectors','regions','alerts','signals','kpi','md-sectors','merger-results','acquisition-results'];
+      await Promise.all(files.map(async (f) => {
+        try {
+          const res = await fetch(`/data/${f}.json`);
+          cache[f] = await res.json();
+        } catch (e) {
+          console.error(`Failed to load ${f}.json`, e);
+          cache[f] = {};
+        }
+      }));
+    }
+    export function getData(key) { return cache[key]; }
+    export function initLiveState(companies) {
+      companies.forEach(c => {
+        if (!liveState[c.ticker]) {
+          const history = [];
+          let p = c.basePrice;
+          for (let i = 0; i < 30; i++) {
+            p = p * (1 + (Math.random() - 0.497) * 0.006);
+            history.push(+p.toFixed(2));
+          }
+          liveState[c.ticker] = {
+            price: +p.toFixed(2),
+            open: +c.basePrice.toFixed(2),
+            changeAbs: +(p - c.basePrice).toFixed(2),
+            changePct: +((p - c.basePrice) / c.basePrice * 100).toFixed(2),
+            history
+          };
+        }
+      });
+    }
+    export function getLiveState(ticker) { return liveState[ticker]; }
+    export function tickPrices(companies) {
+      companies.forEach(c => {
+        const st = liveState[c.ticker];
+        if (!st) return;
+        const drift = (Math.random() - 0.496) * 0.0035;
+        st.price = +(st.price * (1 + drift)).toFixed(2);
+        st.changeAbs = +(st.price - st.open).toFixed(2);
+        st.changePct = +(st.changeAbs / st.open * 100).toFixed(2);
+        st.history.push(st.price);
+        if (st.history.length > 40) st.history.shift();
+      });
+    }
+    export function formatPrice(p) {
+      if (p >= 1000) return '$' + p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      if (p >= 1) return '$' + p.toFixed(2);
+      return '$' + p.toFixed(4);
+    }
+
+    // ─── renderer.js ───────────────────────────────────────────────────
+    function buildSparkline(history, isUp) {
+      const W = 300, H = 52, pad = 4;
+      if (!history || history.length < 2) return '';
+      const mn = Math.min(...history), mx = Math.max(...history);
+      const range = mx - mn || 1;
+      const pts = history.map((v, i) => {
+        const x = pad + (i / (history.length - 1)) * (W - pad * 2);
+        const y = H - pad - ((v - mn) / range) * (H - pad * 2);
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(' ');
+      const lastX = pad + (W - pad * 2);
+      const lastY = H - pad - ((history[history.length - 1] - mn) / range) * (H - pad * 2);
+      const color = isUp ? '#4caf7d' : '#ef4444';
+      const fill = isUp ? 'rgba(76,175,125,0.08)' : 'rgba(239,68,68,0.08)';
+      const areaPoints = `${pad},${H} ${pts} ${lastX},${H}`;
+      return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><polygon points="${areaPoints}" fill="${fill}"/><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${lastX}" cy="${lastY.toFixed(1)}" r="3" fill="${color}"/></svg>`;
+    }
+
+    export function renderTicker() {
+      const tickers = [
+        {symbol:'CAPONE/DFS',price:'$35.3B',change:'PENDING',up:false},
+        {symbol:'SNPS/ANSS',price:'$35.0B',change:'PENDING',up:false},
+        {symbol:'GOOGL/WIZ',price:'$23.0B',change:'PENDING',up:false},
+        {symbol:'MSFT/ATVI',price:'$68.7B',change:'CLOSED',up:true},
+        {symbol:'XOM/PXD',price:'$59.5B',change:'CLOSED',up:true},
+        {symbol:'AVGO/VMW',price:'$61.0B',change:'CLOSED',up:true},
+        {symbol:'PFE/SGEN',price:'$43.0B',change:'CLOSED',up:true},
+        {symbol:'COP/MRO',price:'$22.5B',change:'CLOSED',up:true},
+        {symbol:'CSCO/SPLK',price:'$28.0B',change:'CLOSED',up:true},
+        {symbol:'BLK/GIP',price:'$12.5B',change:'CLOSED',up:true},
+        {symbol:'SBF/OAI',price:'$40.0B',change:'RUMORED',up:false},
+        {symbol:'SHEL/BP',price:'$100B+',change:'RUMORED',up:false},
+        {symbol:'NVO/CTLT',price:'$11.0B',change:'CLOSED',up:true},
+        {symbol:'RIO/ALTM',price:'$6.7B',change:'CLOSED',up:true},
+        {symbol:'AAPL/SOUN',price:'$2.5B',change:'RUMORED',up:false},
+      ];
+      let html = '';
+      tickers.forEach(t => {
+        html += `<div class="ticker-item ${t.up?'up':'dn'}"><span class="symbol">${t.symbol}</span><span class="price">${t.price}</span><span class="change">${t.change}</span></div>`;
+      });
+      html += html;
+      document.getElementById('tickerContent').innerHTML = html;
+    }
+
+    export function renderStatsGrid(era) {
+      const data = getData('deals')?.[era] || [];
+      let totalValue = 0;
+      data.forEach(d => {
+        const v = parseFloat(d.value.replace(/[^0-9.]/g, '')) || 0;
+        totalValue += v;
+      });
+      const pending = data.filter(d => d.status === 'PENDING').length;
+      const closed = data.filter(d => d.status === 'CLOSED').length;
+      const rumored = data.filter(d => d.status === 'RUMORED').length;
+      const eraLabels = {present:'Active Pipeline',past:'Completed Deals',future:'Rumored Pipeline'};
+      const el = document.getElementById('statsGrid');
+      if (!el) return;
+      el.innerHTML = `
+        <div class="stat-box"><div class="stat-num">${data.length}</div><div class="stat-label">Total Deals</div><div class="stat-change up">${eraLabels[era]}</div></div>
+        <div class="stat-box"><div class="stat-num">$${totalValue.toFixed(0)}B</div><div class="stat-label">Combined Value</div><div class="stat-change up">Across all sectors</div></div>
+        <div class="stat-box"><div class="stat-num">${era==='past'?closed:(pending+rumored)}</div><div class="stat-label">${era==='past'?'Closed':'Pending / Rumored'}</div><div class="stat-change ${era==='past'?'up':''}">${era==='past'?'Successfully completed':'Under review / discussion'}</div></div>
+        <div class="stat-box"><div class="stat-num">${new Set(data.map(d=>d.sector)).size}</div><div class="stat-label">Sectors Active</div><div class="stat-change up">Cross-sector activity</div></div>`;
+    }
+
+    export function renderDealsTable(data) {
+      let html = '';
+      data.forEach((d, i) => {
+        const s = (d.status || '').toUpperCase();
+        const sc = s === 'CLOSED' ? 'status-closed' : s === 'PENDING' ? 'status-pending' : 'status-rumored';
+        const sl = s === 'CLOSED' ? 'Closed' : s === 'PENDING' ? 'Pending' : 'Rumored';
+        html += `<tr><td style="color:var(--text-secondary);font-size:.75rem;">${i+1}</td>
+          <td>${d.acquirer}</td><td>${d.target}</td>
+          <td><div class="deal-value">${d.value}</div></td>
+          <td><span class="badge badge-dim" style="font-size:.68rem;">${d.sector}</span></td>
+          <td style="font-size:.78rem;color:var(--text-secondary);">${d.region||''}</td>
+          <td style="font-size:.78rem;color:var(--text-secondary);">${d.date||''}</td>
+          <td style="font-size:.78rem;color:var(--text-secondary);">${d.type||''}</td>
+          <td><span class="deal-status ${sc}">${sl}</span></td></tr>`;
+      });
+      const tbody = document.getElementById('dealsBody');
+      if (tbody) tbody.innerHTML = html || '<tr><td colspan="9" style="text-align:center;color:var(--text-secondary);padding:2rem;">No deals found</td></tr>';
+      const countEl = document.getElementById('dealCount');
+      if (countEl) countEl.textContent = `${data.length} deals`;
+    }
+
+    export function renderSectorTabs(activeSector, onSwitch) {
+      const sectors = getData('sectors');
+      if (!sectors) return;
+      const icons = {Technology:'💻',Healthcare:'🏥',Energy:'⚡',Finance:'🏦',Consumer:'🛍️',Industrials:'⚙️',Mining:'⛏️',Defense:'🛡️','Media & Telecom':'📡','Real Estate':'🏢'};
+      const html = Object.keys(sectors).map((sector, i) => 
+        `<button class="sector-tab ${sector===activeSector?'active':''}" role="tab" aria-selected="${sector===activeSector}" data-sector="${sector}">${icons[sector]||'📊'} ${sector}</button>`
+      ).join('');
+      const el = document.getElementById('sectorTabs');
+      if (el) {
+        el.innerHTML = html;
+        el.querySelectorAll('.sector-tab').forEach(btn => {
+          btn.addEventListener('click', () => onSwitch(btn.dataset.sector));
+        });
+      }
+    }
+
+    export function renderSectorSummary(sector) {
+      const companies = getData('sectors')?.[sector] || [];
+      let gainers = 0, losers = 0, totalChgPct = 0;
+      companies.forEach(c => {
+        const st = getLiveState(c.ticker);
+        if (!st) return;
+        totalChgPct += st.changePct;
+        if (st.changeAbs >= 0) gainers++; else losers++;
+      });
+      const avgChg = companies.length ? (totalChgPct / companies.length).toFixed(2) : '0.00';
+      const avgUp = parseFloat(avgChg) >= 0;
+      const bar = document.getElementById('sectorSummaryBar');
+      if (!bar) return;
+      bar.innerHTML = `
+        <div class="sector-sum-box"><div class="sector-sum-val">${companies.length}</div><div class="sector-sum-lbl">Companies Tracked</div></div>
+        <div class="sector-sum-box"><div class="sector-sum-val" style="color:${avgUp?'var(--accent-green)':'var(--accent-red)'}">${avgUp?'▲':'▼'} ${Math.abs(avgChg)}%</div><div class="sector-sum-lbl">Avg Daily Change</div></div>
+        <div class="sector-sum-box"><div class="sector-sum-val" style="color:var(--accent-green)">${gainers} ▲</div><div class="sector-sum-lbl">Gainers</div></div>
+        <div class="sector-sum-box"><div class="sector-sum-val" style="color:var(--accent-red)">${losers} ▼</div><div class="sector-sum-lbl">Losers</div></div>`;
+    }
+
+    export function renderSectorCompanies(sector) {
+      const companies = getData('sectors')?.[sector] || [];
+      let html = '';
+      companies.forEach(c => {
+        const st = getLiveState(c.ticker);
+        if (!st) return;
+        const up = st.changeAbs >= 0;
+        const pct = Math.abs(st.changePct).toFixed(2);
+        const rangePos = Math.max(2, Math.min(98, ((c.basePrice - c.week52low) / (c.week52high - c.week52low) * 100))).toFixed(1);
+        html += `<div class="company-card"><div class="card-top-bar"></div>
+          <div class="co-header"><div class="co-identity"><div class="co-ticker-row"><span class="co-ticker">${c.ticker}</span><span class="co-exchange">${c.exchange}</span></div>
+          <div class="co-name">${c.name}</div><div class="co-country">${c.country}</div></div>
+          <div class="co-price-block"><div class="co-price-val ${up?'up':'dn'}" id="price-${c.ticker}">${formatPrice(st.price)}</div>
+          <div class="co-price-chg ${up?'up':'dn'}" id="chg-${c.ticker}">${up?'▲':'▼'} ${pct}%</div></div></div>
+          <div class="co-sparkline" id="spark-${c.ticker}">${buildSparkline(st.history, up)}</div>
+          <div class="co-stats-row">
+            <div class="co-stat"><div class="co-stat-val">${c.marketcap}</div><div class="co-stat-lbl">Market Cap</div></div>
+            <div class="co-stat"><div class="co-stat-val">${c.pe}</div><div class="co-stat-lbl">P/E Ratio</div></div>
+            <div class="co-stat"><div class="co-stat-val">${c.volume}</div><div class="co-stat-lbl">Avg Volume</div></div></div>
+          <div class="co-week-range"><div class="co-week-labels"><span>52W Low: ${formatPrice(c.week52low)}</span><span style="color:var(--accent-gold);font-weight:700;">${formatPrice(st.price)}</span><span>52W High: ${formatPrice(c.week52high)}</span></div>
+          <div class="co-week-bar"><div class="co-week-fill" style="width:${rangePos}%"></div><div class="co-week-dot" style="left:${rangePos}%"></div></div></div>
+          <div class="co-badges">${c.badges.map(b=>`<span class="badge badge-dim">${b}</span>`).join('')}</div>
+          <div class="co-desc">${c.desc}</div>
+          <div class="co-cta"><span>View M&A Profile →</span><span class="co-cta-live"><span class="live-dot"></span> SIMULATED</span></div></div>`;
+      });
+      const el = document.getElementById('companyGrid');
+      if (el) el.innerHTML = html;
+    }
+
+    export function updateSectorPrices(sector) {
+      const companies = getData('sectors')?.[sector] || [];
+      companies.forEach(c => {
+        const st = getLiveState(c.ticker);
+        if (!st) return;
+        const up = st.changeAbs >= 0;
+        const priceEl = document.getElementById(`price-${c.ticker}`);
+        const chgEl = document.getElementById(`chg-${c.ticker}`);
+        const sparkEl = document.getElementById(`spark-${c.ticker}`);
+        if (priceEl) {
+          priceEl.textContent = formatPrice(st.price);
+          priceEl.className = `co-price-val ${up?'up':'dn'} co-price-flash`;
+          setTimeout(() => priceEl.classList.remove('co-price-flash'), 450);
+        }
+        if (chgEl) {
+          chgEl.innerHTML = `${up?'▲':'▼'} ${Math.abs(st.changePct).toFixed(2)}%`;
+          chgEl.className = `co-price-chg ${up?'up':'dn'}`;
+        }
+        if (sparkEl) sparkEl.innerHTML = buildSparkline(st.history, up);
+      });
+    }
+
+    export function renderRegions() {
+      const regions = getData('regions') || [];
+      let html = '';
+      regions.forEach(r => {
+        const yoyColor = r.yoy.startsWith('+') ? 'var(--accent-green)' : 'var(--accent-red)';
+        html += `<div class="region-card"><div class="region-header"><span class="region-flag">${r.flag}</span>
+          <div class="region-header-body"><div class="region-name">${r.name}</div><div class="region-vol">${r.vol} YTD 2025</div>
+          <div class="region-yoy" style="color:${yoyColor}">${r.yoy} YoY</div></div></div>
+          <div class="region-stats"><span class="region-deals">${r.deals.toLocaleString()} deals</span>
+          <div class="region-tags">${r.top.map(t=>`<span class="badge badge-dim">${t}</span>`).join('')}</div></div>
+          <div class="region-desc">${r.desc}</div></div>`;
+      });
+      const el = document.getElementById('regionsGrid');
+      if (el) el.innerHTML = html;
+    }
+
+    export function renderAlerts(containerId) {
+      const alerts = getData('alerts') || [];
+      const colors = {hot:'var(--accent-red)',new:'var(--accent-gold)',alert:'var(--accent-purple)',closed:'var(--accent-green)'};
+      const html = alerts.map(a => {
+        const col = colors[a.type] || 'var(--accent-gold)';
+        return `<div class="alert-item"><div class="alert-tag" style="background:${col}20;color:${col}">${a.icon} ${a.type.toUpperCase()}</div>
+          <div style="flex:1"><div style="font-weight:700;color:var(--text-primary);margin-bottom:.3rem;">${a.title}</div>
+          <div class="alert-text">${a.body}</div></div></div>`;
+      }).join('');
+      const el = document.getElementById(containerId);
+      if (el) el.innerHTML = html;
+    }
+
+    export function renderSignals(containerId) {
+      const signals = getData('signals') || [];
+      const html = signals.map(s => 
+        `<div class="signal-card"><div style="font-size:2rem;margin-bottom:.75rem">${s.icon}</div>
+          <div style="margin-bottom:.5rem"><span style="font-size:.65rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .6rem;border-radius:4px;background:${s.color}20;color:${s.color}">${s.signal}</span></div>
+          <div style="font-family:var(--font-heading);font-weight:800;font-size:1rem;color:var(--text-primary);margin-bottom:.6rem">${s.title}</div>
+          <div style="font-size:.8rem;color:var(--text-secondary);line-height:1.65">${s.body}</div></div>`
+      ).join('');
+      const el = document.getElementById(containerId);
+      if (el) el.innerHTML = html;
+    }
+
+    export function renderIntelligence() {
+      const kpis = getData('kpi') || [];
+      const html = kpis.map(k => 
+        `<div class="card" style="text-align:center;padding:1.5rem;">
+          <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-secondary);font-weight:700;margin-bottom:.5rem">${k.label}</div>
+          <div style="font-size:1.8rem;font-weight:900;color:var(--text-primary)">${k.value}</div>
+          <div style="font-size:.72rem;color:${k.up?'var(--accent-green)':'var(--accent-red)'};margin-top:.35rem;font-weight:600">${k.sub}</div></div>`
+      ).join('');
+      const el = document.getElementById('kpiGrid');
+      if (el) el.innerHTML = html;
+    }
+
+    export function renderMakeDeals() {
+      const sectors = getData('md-sectors') || [];
+      let html = `<div class="deal-type-row">
+        <button class="deal-type-btn btn-merger" onclick="window.openModal('mergerModal')"><span class="btn-icon">🤝</span> Merger<span class="btn-sub">Combine equals for shared growth</span></button>
+        <button class="deal-type-btn btn-acquisition" onclick="window.openModal('acquisitionModal')"><span class="btn-icon">🎯</span> Acquisition<span class="btn-sub">Buy & integrate a target company</span></button>
+        </div>
+        <div class="section-label-gold">Explore by Sector</div><div class="md-sector-grid">`;
+      sectors.forEach(s => {
+        html += `<div class="md-sector-card"><div class="md-sector-icon">${s.icon}</div>
+          <div class="md-sector-title">${s.name}</div><div class="md-sector-sub">${s.desc}</div>
+          <div style="background:rgba(201,168,76,.1);border-radius:6px;padding:.5rem .75rem;margin-bottom:1rem;font-size:.75rem;color:var(--accent-gold);font-weight:600;">🔥 Hot: ${s.hotArea} · Avg ${s.multiple}</div>
+          <div class="md-sector-stats"><div><div class="md-sector-stat-num" style="color:var(--accent-gold);">${s.dealVol}</div><div class="md-sector-stat-lbl">YTD Vol.</div></div>
+          <div><div class="md-sector-stat-num" style="color:var(--text-primary);">${s.deals}</div><div class="md-sector-stat-lbl">Active Deals</div></div></div></div>`;
+      });
+      html += '</div>';
+      const el = document.getElementById('mdContent');
+      if (el) el.innerHTML = html;
+    }
+
+    export function addMessage(role, text) {
+      const msgs = document.getElementById('chatMessages');
+      if (!msgs) return;
+      const div = document.createElement('div');
+      div.className = `msg msg-${role==='user'?'user':'ai'}`;
+      div.innerHTML = `<div class="msg-label">${role==='user'?'YOU':'M&A AI ASSISTANT'}</div><div>${text}</div>`;
+      msgs.appendChild(div);
+      msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    export function addTyping() {
+      const msgs = document.getElementById('chatMessages');
+      if (!msgs) return null;
+      const div = document.createElement('div');
+      div.className = 'msg msg-ai';
+      div.id = 'typingMsg';
+      div.innerHTML = `<div class="msg-label">M&A AI ASSISTANT</div><div><span class="typing-indicator"><span></span><span></span><span></span></span></div>`;
+      msgs.appendChild(div);
+      msgs.scrollTop = msgs.scrollHeight;
+      return div;
+    }
+
+    export function renderQuickBtns(queries, onClick) {
+      const html = queries.map(q => `<button class="quick-btn" type="button">${q}</button>`).join('');
+      const el = document.getElementById('quickBtns');
+      if (el) {
+        el.innerHTML = html;
+        el.querySelectorAll('.quick-btn').forEach((btn, i) => {
+          btn.addEventListener('click', () => onClick(queries[i]));
+        });
+      }
+    }
+
+    export function renderModalResults(prefix, state) {
+      const isMerger = prefix === 'm';
+      const elId = isMerger ? 'merger-results' : 'acquisition-results';
+      const typeLabel = isMerger ? 'Merger Partner' : 'Acquisition Target';
+      const icon = isMerger ? '🤝' : '🎯';
+      const sector = state.sector || 'Technology';
+      const results = getData(isMerger ? 'merger-results' : 'acquisition-results')?.[sector] || [];
+      let html = `<div class="results-header"><div class="results-header-icon">${icon}</div>
+        <div><div class="results-header-title">Top ${typeLabel}s for ${sector} · ${state.value}</div>
+        <div class="results-header-sub">Goal: ${state.goal||'Strategic Growth'} · Ranked by strategic fit</div></div></div>`;
+      const ranks = ['🥇','🥈','🥉'];
+      results.forEach((c, i) => {
+        html += `<div class="result-card rank-${i+1}">
+          <div class="result-rank">${ranks[i]} #${i+1} MATCH</div>
+          <div class="result-company">${c.name}</div>
+          <div class="result-meta">Est. Value: ${c.val}</div>
+          <div class="result-tags"><span class="result-tag fit">✓ ${c.fit} Fit</span>${c.tags.map(t=>`<span class="result-tag value">${t}</span>`).join('')}</div>
+          <div class="result-desc">${c.desc}</div></div>`;
+      });
+      html += `<div style="margin-top:1.5rem;padding:1rem;background:var(--bg-tertiary);border-radius:8px;font-size:.75rem;color:var(--text-secondary);line-height:1.6;">
+        <strong style="color:var(--accent-gold);">⚠️ Disclaimer:</strong> These recommendations are generated from our M&A database for screening purposes only. Actual deal execution requires professional advisory, due diligence, and regulatory review.</div>`;
+      const el = document.getElementById(elId);
+      if (el) el.innerHTML = html;
+    }
+
+    // ─── interactions.js ───────────────────────────────────────────────────
+    let currentEra = 'present';
+    let currentSector = 'Technology';
+    let liveInterval = null;
+
+    const QUICK_QUERIES = [
+      'What are the largest pending M&A deals right now?',
+      'Analyze regulatory risk for tech mega-mergers in 2025',
+      'Which sectors have the highest M&A activity this year?',
+      'What is a typical EV/EBITDA multiple for healthcare acquisitions?',
+      'Explain the Shell/BP merger rumor and its implications',
+      'What PE dry powder is available and where is it being deployed?',
+    ];
+
+    const AI_RESPONSES = {
+      'What are the largest pending M&A deals right now?':
+        '<strong>Top 5 Pending M&A Deals (by value):</strong><br><br>1. <strong>Chevron → Hess Corporation</strong> — $53.0B (Energy, pending ICC arbitration)<br>2. <strong>Mars Inc. → Kellanova</strong> — $36.0B (Consumer)<br>3. <strong>Capital One → Discover Financial</strong> — $35.3B (Finance, DOJ review)<br>4. <strong>Synopsys → Ansys</strong> — $35.0B (Technology, EU Phase II)<br>5. <strong>Alphabet → Wiz</strong> — $23.0B (Technology)<br><br><em>Combined pending pipeline: $200B+ across these 5 deals.</em>',
+      'Analyze regulatory risk for tech mega-mergers in 2025':
+        '<strong>Tech M&A Regulatory Landscape — 2025:</strong><br><br><strong>🇺🇸 US (DOJ/FTC):</strong> Biden-era antitrust framework persists. DOJ challenges every tech deal >$10B.<br><br><strong>🇪🇺 EU (DG COMP):</strong> DMA creates additional scrutiny for gatekeepers. Phase II reviews now standard.<br><br><strong>🇬🇧 UK (CMA):</strong> Most aggressive global regulator. Blocked Microsoft/Activision initially.<br><br><strong>Assessment:</strong> Regulatory risk at 20-year high. Expect 6–18 month delays.',
+      'Which sectors have the highest M&A activity this year?':
+        '<strong>2025 YTD M&A by Sector:</strong><br><br>1. <strong>Technology — $714B</strong> (31%)<br>2. <strong>Energy — $540B</strong> (23%)<br>3. <strong>Healthcare — $380B</strong> (16%)<br>4. <strong>Finance — $280B</strong> (12%)<br>5. <strong>Consumer — $190B</strong> (8%)<br><br><em>Total 2025 YTD: ~$2.1T across 4,847 deals.</em>',
+      'What is a typical EV/EBITDA multiple for healthcare acquisitions?':
+        '<strong>Healthcare M&A Multiples (2024–2025):</strong><br><br>• <strong>Large-Cap Pharma:</strong> 12–16x<br>• <strong>Biotech (pre-revenue):</strong> 3–8x peak sales<br>• <strong>MedTech/Devices:</strong> 18–25x<br>• <strong>CROs/CDMOs:</strong> 14–20x<br>• <strong>Digital Health:</strong> 8–15x revenue<br><br><em>GLP-1/obesity assets command 30–50% premiums.</em>',
+      'Explain the Shell/BP merger rumor and its implications':
+        '<strong>Shell/BP Merger Analysis:</strong><br><br><strong>The Rumor:</strong> Preliminary discussions reported. Combined value: $350B+.<br><br><strong>Rationale:</strong> 5.5M boe/day combined, $5–8B cost synergies, largest LNG portfolio.<br><br><strong>Challenges:</strong> EU/UK competition review (18+ months), $100B+ combined debt.<br><br><em>Probability: 25–30%.</em>',
+      'What PE dry powder is available and where is it being deployed?':
+        '<strong>PE Dry Powder — 2025:</strong><br><br><strong>Total: $3.9T</strong> (record high)<br><br>• Buyout: $1.1T<br>• Growth Equity: $680B<br>• Venture Capital: $540B<br>• Private Credit: $480B<br>• Infrastructure: $420B<br><br><strong>Hotspots:</strong> Japan buyouts, US healthcare roll-ups, European carve-outs, AI infrastructure, India tech.'
+    };
+
+    function getLocalAIResponse(query) {
+      const q = query.toLowerCase();
+      for (const key in AI_RESPONSES) {
+        if (query === key) return AI_RESPONSES[key];
+      }
+      if (q.includes('pending') || q.includes('largest deal')) return AI_RESPONSES[QUICK_QUERIES[0]];
+      if (q.includes('regulat') || q.includes('antitrust')) return AI_RESPONSES[QUICK_QUERIES[1]];
+      if (q.includes('sector') || q.includes('activity')) return AI_RESPONSES[QUICK_QUERIES[2]];
+      if (q.includes('multiple') || q.includes('ebitda') || q.includes('valuation')) return AI_RESPONSES[QUICK_QUERIES[3]];
+      if (q.includes('shell') || q.includes('bp')) return AI_RESPONSES[QUICK_QUERIES[4]];
+      if (q.includes('dry powder') || q.includes('private equity')) return AI_RESPONSES[QUICK_QUERIES[5]];
+      return '<strong>M&A Intelligence Analysis:</strong><br><br>• <strong>Global M&A volume</strong> has reached $2.1T YTD in 2025, up 18% YoY<br>• <strong>Technology</strong> dominates at 31% of deal value<br>• <strong>Average deal premium</strong> stands at 36%<br>• <strong>120+ deals</strong> in regulatory review ($800B+)<br>• <strong>PE dry powder</strong> at record $3.9T<br><br><em>Ask about specific deals, sectors, or valuations.</em>';
+    }
+
+    const CLAUDE_API_KEY = 'YOUR_API_KEY'; // replace with real key for Claude API
+
+    async function getAIResponse(query) {
+      try {
+        if (!CLAUDE_API_KEY || CLAUDE_API_KEY === 'YOUR_API_KEY') {
+          return getLocalAIResponse(query);
+        }
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': CLAUDE_API_KEY,
+            'anthropic-version': '2023-06-01'
+          },
+          body: JSON.stringify({
+            model: 'claude-3-sonnet-20240229',
+            max_tokens: 500,
+            messages: [
+              { role: 'user', content: `You are an M&A intelligence assistant. Respond concisely to: ${query}` }
+            ]
+          })
+        });
+        const data = await response.json();
+        return data?.content?.[0]?.text || getLocalAIResponse(query);
+      } catch (e) {
+        return getLocalAIResponse(query);
+      }
+    }
+
+    function debounce(fn, ms) {
+      let timer;
+      return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn(...args), ms);
+      };
+    }
+
+    function filterDeals() {
+      const search = document.getElementById('dealSearch')?.value || '';
+      const sector = document.getElementById('sectorFilter')?.value || '';
+      const region = document.getElementById('regionFilter')?.value || '';
+      const data = (getData('deals')?.[currentEra] || []).filter(d => {
+        const q = search.toLowerCase();
+        const ms = !q || d.acquirer.toLowerCase().includes(q) || d.target.toLowerCase().includes(q) || (d.sector || '').toLowerCase().includes(q);
+        let mc = !sector;
+        if (sector === 'Media & Telecom') {
+          mc = d.sector === 'Media' || d.sector === 'Telecoms';
+        } else {
+          mc = !sector || d.sector === sector;
+        }
+        const mr = !region || (d.region || '') === region;
+        return ms && mc && mr;
+      });
+      renderDealsTable(data);
+    }
+
+    function switchEra(era) {
+      currentEra = era;
+      document.querySelectorAll('.deal-era-btn').forEach(t => {
+        t.classList.toggle('active', t.dataset.era === era);
+        t.setAttribute('aria-selected', t.dataset.era === era);
+      });
+      renderStatsGrid(era);
+      filterDeals();
+    }
+
+    function switchSector(sector) {
+      currentSector = sector;
+      if (liveInterval) clearInterval(liveInterval);
+      const companies = getData('sectors')?.[sector] || [];
+      initLiveState(companies);
+      renderSectorTabs(sector, switchSector);
+      renderSectorCompanies(sector);
+      renderSectorSummary(sector);
+      liveInterval = setInterval(() => {
+        tickPrices(companies);
+        updateSectorPrices(sector);
+        renderSectorSummary(sector);
+      }, 2800);
+    }
+
+    // navigation lifecycle: clear live interval when leaving Sectors page
+    window.addEventListener('sectionchange', (e) => {
+      if (e.detail.section !== 'sectors' && liveInterval) {
+        clearInterval(liveInterval);
+        liveInterval = null;
+      }
+    });
+
+    async function sendMessage() {
+      const input = document.getElementById('chatInput');
+      const btn = document.getElementById('sendBtn');
+      if (!input || !btn) return;
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = '';
+      btn.disabled = true;
+      addMessage('user', text);
+      const typing = addTyping();
+      const response = await getAIResponse(text);
+      if (typing) typing.remove();
+      addMessage('assistant', response);
+      btn.disabled = false;
+    }
+
+    const modalState = { m: { step: 1, sector: null, value: '$500M', goal: null }, a: { step: 1, sector: null, value: '$500M', goal: null } };
+
+    const SECTOR_OPTIONS = [
+      {name:'Technology',icon:'💻'},{name:'Healthcare',icon:'🏥'},{name:'Energy',icon:'⚡'},
+      {name:'Finance',icon:'🏦'},{name:'Consumer',icon:'🛍️'},{name:'Industrials',icon:'⚙️'},
+      {name:'Media & Telecom',icon:'📡'},{name:'Real Estate',icon:'🏢'},{name:'Mining',icon:'⛏️'},{name:'Defense',icon:'🛡️'}
+    ];
+    const MERGER_GOALS = [
+      {icon:'🌍',title:'Geographic Expansion',desc:'Enter new countries or regions'},
+      {icon:'🔬',title:'Technology / IP Access',desc:'Gain proprietary tech or patents'},
+      {icon:'📈',title:'Revenue Scale',desc:'Double revenue via combined entity'},
+      {icon:'🏭',title:'Vertical Integration',desc:'Control more of the supply chain'}
+    ];
+    const ACQUISITION_GOALS = [
+      {icon:'🤖',title:'Acqui-hire',desc:'Primarily acquiring the team & talent'},
+      {icon:'💡',title:'Innovation Buy',desc:'Bring in new products or technology'},
+      {icon:'🚫',title:'Eliminate Competitor',desc:'Remove a rival from the market'},
+      {icon:'📊',title:'Financial Returns',desc:'PE-style value creation & exit'}
+    ];
+
+    function sliderToValue(v) {
+      const bp = [[0,10,'$50M'],[10,20,'$100M'],[20,30,'$250M'],[30,40,'$500M'],[40,50,'$1B'],[50,60,'$2B'],[60,70,'$5B'],[70,80,'$10B'],[80,90,'$25B'],[90,100,'$50B+']];
+      for (let i = 0; i < bp.length; i++) if (v >= bp[i][0] && v < bp[i][1]) return bp[i][2];
+      return '$50B+';
+    }
+
+    function buildModalStep1(p) {
+      const gridId = p === 'm' ? 'm-sector-grid' : 'a-sector-grid';
+      const html = SECTOR_OPTIONS.map(s => 
+        `<div class="option-pill" data-val="${s.name}"><span class="pill-icon">${s.icon}</span>${s.name}</div>`
+      ).join('');
+      document.getElementById(gridId).innerHTML = html;
+      
+      const goals = p === 'm' ? MERGER_GOALS : ACQUISITION_GOALS;
+      const gGridId = p === 'm' ? 'm-goal-grid' : 'a-goal-grid';
+      const gHtml = goals.map(g => 
+        `<div class="goal-card" data-val="${g.title}"><div class="goal-card-icon">${g.icon}</div><div class="goal-card-title">${g.title}</div><div class="goal-card-desc">${g.desc}</div></div>`
+      ).join('');
+      document.getElementById(gGridId).innerHTML = gHtml;
+      
+      // attach listeners (avoid shadowing outer p)
+      document.querySelectorAll(`#${gridId} .option-pill`).forEach(el => {
+        el.addEventListener('click', () => {
+          document.querySelectorAll(`#${gridId} .option-pill`).forEach(pill => pill.classList.remove('selected'));
+          el.classList.add('selected');
+          modalState[p].sector = el.dataset.val;
+          document.getElementById(`${p}-next-btn`).disabled = false;
+        });
+      });
+      
+      document.querySelectorAll(`#${gGridId} .goal-card`).forEach(el => {
+        el.addEventListener('click', () => {
+          document.querySelectorAll(`#${gGridId} .goal-card`).forEach(card => card.classList.remove('selected'));
+          el.classList.add('selected');
+          modalState[p].goal = el.dataset.val;
+          document.getElementById(`${p}-next-btn`).disabled = false;
+        });
+      });
+    }
+
+    function setModalStep(p, step) {
+      modalState[p].step = step;
+      const modalId = p === 'm' ? 'mergerModal' : 'acquisitionModal';
+      document.querySelectorAll(`#${modalId} .modal-step`).forEach(s => s.classList.remove('active'));
+      document.getElementById(`${p}step-${step}`).classList.add('active');
+      for (let i = 1; i <= 4; i++) {
+        const dot = document.getElementById(`${p}step-dot-${i}`);
+        if (dot) dot.classList.toggle('done', i <= step);
+      }
+      const labels = ['', 'Step 1 of 3', 'Step 2 of 3', 'Step 3 of 3', 'Your Results'];
+      document.getElementById(`${p}step-label`).textContent = labels[step] || '';
+      const backBtn = document.getElementById(`${p}-back-btn`);
+      const nextBtn = document.getElementById(`${p}-next-btn`);
+      backBtn.style.display = step > 1 ? 'block' : 'none';
+      if (step === 4) {
+        nextBtn.textContent = '✕ Close';
+        nextBtn.onclick = () => closeModal(modalId);
+      } else {
+        nextBtn.textContent = step === 3 ? '✨ Get Recommendations' : 'Continue →';
+        nextBtn.onclick = () => modalNext(p);
+        nextBtn.disabled = (step === 1 && !modalState[p].sector) || (step === 3 && !modalState[p].goal);
+      }
+    }
+
+    function modalNext(p) {
+      const cur = modalState[p].step;
+      if (cur === 2) {
+        modalState[p].value = sliderToValue(parseInt(document.getElementById(`${p}-value-slider`).value));
+      }
+      if (cur < 3) {
+        setModalStep(p, cur
